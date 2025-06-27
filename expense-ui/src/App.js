@@ -55,7 +55,7 @@ function App() {
 
   return (
     <div>
-      <h1>Expense Type Management</h1>
+      <h1>Expense Type </h1>
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <ExpenseTypeForm onSubmit={handleSubmit} selected={selected} setSelected={setSelected} />
