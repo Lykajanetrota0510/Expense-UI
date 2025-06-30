@@ -13,7 +13,7 @@
 }
 
 .expense-table thead {
-  background-color: #343a40;
+  background-color: #173f68;
   color: white;
 }
 
@@ -28,3 +28,8 @@
 .action-buttons button {
   margin-right: 5px;
 }
+.expense-table thead th {
+  background-color: #173f68 !important;
+  color: #fff !important;
+}
+
