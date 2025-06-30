@@ -14,47 +14,61 @@ const ExpenseTypeForm = ({ onSubmit, selected, setSelected }) => {
     }
   }, [selected]);
 
-  const handleChange = (e) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+  const handleCodeChange = (e) => {
+    setFormData(prev => ({ ...prev, code: e.target.value }));
+  };
+
+  const handleDescriptionChange = (e) => {
+    setFormData(prev => ({ ...prev, description: e.target.value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
+    resetForm();
+  };
+
+  const resetForm = () => {
     setFormData({ id: 0, code: '', description: '' });
-    setSelected(null); // Clear selection after submit
+    setSelected(null);
   };
 
   return (
     <form onSubmit={handleSubmit} className="mb-4">
-      <div className="mb-2">
-        <input
-          type="text"
-          name="code"
-          value={formData.code}
-          onChange={handleChange}
-          placeholder="Code"
-          className="form-control"
-          required
-        />
+      <div className="row g-2 align-items-center">
+        <div className="col-md-4">
+          <input
+            type="text"
+            name="code"
+            value={formData.code}
+            onChange={handleCodeChange}
+            placeholder="Enter code"
+            className="form-control"
+            required
+          />
+        </div>
+        <div className="col-md-4">
+          <input
+            type="text"
+            name="description"
+            value={formData.description}
+            onChange={handleDescriptionChange}
+            placeholder="Enter description"
+            className="form-control"
+            required
+          />
+        </div>
+        <div className="col-md-4">
+          {formData.id !== 0 ? (
+            <>
+              <button type="submit" className="btn btn-success me-2">Update</button>
+              <button type="button" className="btn btn-secondary" onClick={resetForm}>Cancel</button>
+            </>
+          ) : (
+            <button type="submit" className="btn btn-primary">Create</button>
+          )}
+        </div>
       </div>
-      <div className="mb-2">
-        <input
-          type="text"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Description"
-          className="form-control"
-          required
-        />
-      </div>
-      <button type="submit" className="btn btn-primary">
-        {formData.id !== 0 ? 'Update' : 'Create'}
-      </button>
     </form>
   );
 };
