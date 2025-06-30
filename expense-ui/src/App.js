@@ -53,10 +53,22 @@ function App() {
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-3">Expense Type</h2>
+      <h2 className="mb-3 text-center">Expense Type</h2>
       {error && <div className="alert alert-danger">{error}</div>}
-      <ExpenseTypeForm onSubmit={handleSubmit} selected={selected} setSelected={setSelected} />
-      <ExpenseTypeList data={expenseTypes} onEdit={setSelected} onDelete={handleDelete} />
+
+      {/* Pass allExpenseTypes so the form can do its single-search logic */}
+      <ExpenseTypeForm
+        onSubmit={handleSubmit}
+        selected={selected}
+        setSelected={setSelected}
+        allExpenseTypes={expenseTypes}
+      />
+
+      <ExpenseTypeList
+        data={expenseTypes}
+        onEdit={setSelected}
+        onDelete={handleDelete}
+      />
     </div>
   );
 }
