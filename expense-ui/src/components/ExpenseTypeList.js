@@ -1,32 +1,37 @@
+// src/components/ExpenseTypeList.js
 import React from 'react';
-import './ExpenseTypeList.css'; // import the CSS file
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './ExpenseTypeList.css';
 
 const ExpenseTypeList = ({ data, onEdit, onDelete }) => {
   return (
-    <table className="expense-table">
+    // Added expense-table class
+    <table className="table table-striped expense-table">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Code</th>
           <th>Description</th>
-          <th>Actions</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         {data.map(({ id, code, description }) => (
           <tr key={id}>
-            <td>{id}</td>
             <td>{code}</td>
             <td>{description}</td>
-            <td className="action-buttons">
-              <button className="edit-btn" onClick={() => onEdit({ id, code, description })}>
-  Edit
-</button>
-<button className="delete-btn" onClick={() => onDelete(id)}>
-  Delete
-</button>
-
-           
+            <td>
+              <button
+                className="btn btn-primary btn-sm me-2"
+                onClick={() => onEdit({ id, code, description })}
+              >
+                Edit
+              </button>
+              <button
+                className="btn btn-danger btn-sm"
+                onClick={() => onDelete(id)}
+              >
+                Delete
+              </button>
             </td>
           </tr>
         ))}
