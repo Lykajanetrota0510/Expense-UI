@@ -1,10 +1,9 @@
 import React from 'react';
+import './ExpenseTypeList.css'; // import the CSS file
 
 const ExpenseTypeList = ({ data, onEdit, onDelete }) => {
-  if (!data.length) return <p>No data found.</p>;
-
   return (
-    <table border="1">
+    <table className="expense-table">
       <thead>
         <tr>
           <th>ID</th>
@@ -19,9 +18,15 @@ const ExpenseTypeList = ({ data, onEdit, onDelete }) => {
             <td>{id}</td>
             <td>{code}</td>
             <td>{description}</td>
-            <td>
-              <button onClick={() => onEdit({ id, code, description })}>Edit</button>
-              <button onClick={() => onDelete(id)}>Delete</button>
+            <td className="action-buttons">
+              <button className="edit-btn" onClick={() => onEdit({ id, code, description })}>
+  Edit
+</button>
+<button className="delete-btn" onClick={() => onDelete(id)}>
+  Delete
+</button>
+
+           
             </td>
           </tr>
         ))}
