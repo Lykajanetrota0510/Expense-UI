@@ -29,20 +29,17 @@ function App() {
   }, []);
 
   const handleSubmit = async (data) => {
-  try {
-    if (data.id && data.id !== 0) {
-      console.log("Updating:", data); // ✅ Add this
-      await updateExpenseType(data);
-    } else {
-      await createExpenseType(data);
+    try {
+      if (data.id && data.id !== 0) {
+        await updateExpenseType(data);
+      } else {
+        await createExpenseType(data);
+      }
+      fetchData();
+    } catch (err) {
+      setError('Error saving data');
     }
-    fetchData();
-  } catch (err) {
-    console.error("Update error:", err.response || err.message || err); // ✅ Log the exact error
-    setError('Error saving data');
-  }
-};
-
+  };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this item?')) return;
