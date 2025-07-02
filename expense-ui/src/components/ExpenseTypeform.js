@@ -1,76 +1,66 @@
 // src/components/ExpenseTypeForm.js
 import React, { useState, useEffect } from 'react';
+import { Modal, Button, Spinner, Form } from 'react-bootstrap';
 
-const ExpenseTypeForm = ({ onSubmit, selected, setSelected }) => {
-  const [formData, setFormData] = useState({ id: 0, code: '', description: '' });
+function ExpenseTypeForm({ show, onClose, onSave, loading, expenseType }) {
+  const [formData, setFormData] = useState({ code: '', description: '' });
 
   useEffect(() => {
-    if (selected) {
+    if (expenseType) {
       setFormData({
-        id: selected.id || 0,
-        code: selected.code || '',
-        description: selected.description || '',
+        id: expenseType.id,
+        code: expenseType.code,
+        description: expenseType.description,
       });
     }
-  }, [selected]);
+  }, [expenseType]);
 
-  const handleCodeChange = (e) => {
-    setFormData(prev => ({ ...prev, code: e.target.value }));
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleDescriptionChange = (e) => {
-    setFormData(prev => ({ ...prev, description: e.target.value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-    resetForm();
-  };
-
-  const resetForm = () => {
-    setFormData({ id: 0, code: '', description: '' });
-    setSelected(null);
+  const handleSubmit = () => {
+    onSave(formData);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4">
-      <div className="row g-2 align-items-center">
-        <div className="col-md-4">
-          <input
+    <Modal show={show} onHide={onClose} backdrop="static">
+      <Modal.Header closeButton>
+        <Modal.Title>{expenseType ? 'Edit' : 'Create'} Expense Type</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form.Group className="mb-3">
+          <Form.Label>Code</Form.Label>
+          <Form.Control
             type="text"
             name="code"
             value={formData.code}
-            onChange={handleCodeChange}
-            placeholder="Enter code"
-            className="form-control"
+            onChange={handleChange}
             required
           />
-        </div>
-        <div className="col-md-4">
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Description</Form.Label>
+          <Form.Control
             type="text"
             name="description"
             value={formData.description}
-            onChange={handleDescriptionChange}
-            placeholder="Enter description"
-            className="form-control"
+            onChange={handleChange}
             required
           />
-        </div>
-        <div className="col-md-4">
-          {formData.id !== 0 ? (
-            <>
-              <button type="submit" className="btn btn-success me-2">Update</button>
-              <button type="button" className="btn btn-secondary" onClick={resetForm}>Cancel</button>
-            </>
-          ) : (
-            <button type="submit" className="btn btn-primary">Create</button>
-          )}
-        </div>
-      </div>
-    </form>
+        </Form.Group>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onClose} disabled={loading}>
+          Cancel
+        </Button>
+        <Button variant="primary" onClick={handleSubmit} disabled={loading}>
+          {loading ? <Spinner animation="border" size="sm" /> : 'Save'}
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
-};
+}
 
 export default ExpenseTypeForm;
