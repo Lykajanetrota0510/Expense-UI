@@ -62,7 +62,7 @@ function App() {
           />
         </div>
         <div className="col-md-4">
-          <button className="btn btn-primary w-100" onClick={() => setShowModal(true)}>
+          <button className="btn btn-primary w-35" onClick={() => setShowModal(true)}>
             Create 
           </button>
         </div>
