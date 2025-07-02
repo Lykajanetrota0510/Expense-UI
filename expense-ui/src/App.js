@@ -16,6 +16,9 @@ function App() {
   const [selected, setSelected] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [deleteId, setDeleteId] = useState(null);
+const [deleting, setDeleting] = useState(false);
 
   const fetchData = async () => {
   const data = await getExpenseTypes(searchText);
@@ -39,12 +42,24 @@ function App() {
     fetchData();
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this?')) {
-      await deleteExpenseType(id);
-      fetchData();
-    }
-  };
+ const confirmDelete = (id) => {
+  setDeleteId(id);
+  setShowDeleteModal(true);
+};
+
+const handleDelete = async () => {
+  setDeleting(true);
+  try {
+    await deleteExpenseType(deleteId);
+    await fetchData();
+  } catch (err) {
+    console.error('Delete failed:', err);
+  } finally {
+    setDeleting(false);
+    setShowDeleteModal(false);
+  }
+};
+
 
   return (
     <div className="container mt-5">
@@ -69,14 +84,17 @@ function App() {
       </div>
 
       {/* List Table */}
-      <ExpenseTypeList
-        data={expenseTypes}
-        onEdit={(item) => {
-          setSelected(item);
-          setShowModal(true);
-        }}
-        onDelete={handleDelete}
-      />
+     <ExpenseTypeList
+  data={expenseTypes}
+  onEdit={(item) => {
+    setSelected(item);
+    setShowModal(true);
+  }}
+  onDelete={(item) => {
+    setDeleteId(item.id);
+    setShowDeleteModal(true);
+  }}
+/>
 
       {/* Create/Edit Modal */}
       {showModal && (
@@ -91,6 +109,30 @@ function App() {
           expenseType={selected}
         />
       )}
+      {showDeleteModal && (
+  <div className="modal show d-block" tabIndex="-1">
+    <div className="modal-dialog modal-dialog-centered">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">Confirm Delete</h5>
+          <button type="button" className="btn-close" onClick={() => setShowDeleteModal(false)}></button>
+        </div>
+        <div className="modal-body">
+          <p>Are you sure you want to delete this item?</p>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={() => setShowDeleteModal(false)} disabled={deleting}>
+            Cancel
+          </button>
+          <button className="btn btn-danger" onClick={handleDelete} disabled={deleting}>
+            {deleting ? <span className="spinner-border spinner-border-sm" /> : 'Delete'}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
