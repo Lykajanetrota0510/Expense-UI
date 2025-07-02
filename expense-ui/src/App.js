@@ -12,63 +12,85 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [expenseTypes, setExpenseTypes] = useState([]);
+  const [searchText, setSearchText] = useState('');
   const [selected, setSelected] = useState(null);
-  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const fetchData = async () => {
-    try {
-      const res = await getExpenseTypes();
-      setExpenseTypes(res.data);
-    } catch (err) {
-      setError('Failed to load data');
-    }
-  };
+  const data = await getExpenseTypes(searchText);
+  setExpenseTypes(data);
+};
+
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [searchText]);
 
-  const handleSubmit = async (data) => {
-    try {
-      if (data.id && data.id !== 0) {
-        await updateExpenseType(data);
-      } else {
-        await createExpenseType(data);
-      }
-      fetchData();
-    } catch (err) {
-      setError('Error saving data');
+  const handleSave = async (item) => {
+    setIsLoading(true);
+    if (item.id) {
+      await updateExpenseType(item.id, item);
+    } else {
+      await createExpenseType(item);
     }
+    setIsLoading(false);
+    setShowModal(false);
+    fetchData();
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this item?')) return;
-    try {
+    if (window.confirm('Are you sure you want to delete this?')) {
       await deleteExpenseType(id);
       fetchData();
-    } catch (err) {
-      setError('Error deleting data');
     }
   };
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-3 text-center">Expense Type</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
+    <div className="container mt-5">
+      <h2>Expense Type Management</h2>
 
-      {/* Pass allExpenseTypes so the form can do its single-search logic */}
-      <ExpenseTypeForm
-        onSubmit={handleSubmit}
-        selected={selected}
-        setSelected={setSelected}
-        allExpenseTypes={expenseTypes}
-      />
+      {/* ✅ Combined Search Bar */}
+      <div className="row mb-3">
+        <div className="col-md-8">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by Code or Description"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+        </div>
+        <div className="col-md-4">
+          <button className="btn btn-primary w-100" onClick={() => setShowModal(true)}>
+            + Create Expense Type
+          </button>
+        </div>
+      </div>
 
+      {/* List Table */}
       <ExpenseTypeList
         data={expenseTypes}
-        onEdit={setSelected}
+        onEdit={(item) => {
+          setSelected(item);
+          setShowModal(true);
+        }}
         onDelete={handleDelete}
       />
+
+      {/* Create/Edit Modal */}
+      {showModal && (
+        <ExpenseTypeForm
+          show={showModal}
+          onClose={() => {
+            setShowModal(false);
+            setSelected(null);
+          }}
+          onSave={handleSave}
+          loading={isLoading}
+          expenseType={selected}
+        />
+      )}
     </div>
   );
 }
