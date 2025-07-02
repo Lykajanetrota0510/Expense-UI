@@ -28,8 +28,8 @@
 .action-buttons button {
   margin-right: 5px;
 }
-.expense-table thead th {
-  background-color: #173f68 !important;
-  color: #fff !important;
+.custom-table-header {
+  background-color: #173f68;
+  color: white;
 }
 
