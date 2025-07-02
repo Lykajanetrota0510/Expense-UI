@@ -20,7 +20,7 @@ function ExpenseTypeList({ data, onEdit, onDelete }) {
               <button className="btn btn-primary btn-sm me-2" onClick={() => onEdit(item)}>
                 Edit
               </button>
-              <button className="btn btn-danger btn-sm" onClick={() => onDelete(item.id)}>
+<button className="btn btn-danger btn-sm" onClick={() => onDelete(item)}>
                 Delete
               </button>
             </td>
